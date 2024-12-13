@@ -28,14 +28,12 @@ func (s *sqliteDatabase) Query(query string, args ...interface{}) (*sql.Rows, er
 	return s.database.Query(query, args...)
 }
 
-func Init(removeDB bool) *sqliteDatabase {
+func Init(isRemoveDB bool) *sqliteDatabase {
 	path := config.GetConfig().Sqlite.Path
 
-	if removeDB {
-		logger.Info("Remove database " + path)
-		if err := os.Remove(path); err != nil {
-			logger.Error("can't remove database", sl.Err(err))
-			return nil
+	if isRemoveDB {
+		if err := removeDB(path); err != nil {
+			logger.Error("Can't remove database file", slog.String("path", path), sl.Err(err))
 		}
 	}
 
@@ -46,18 +44,28 @@ func Init(removeDB bool) *sqliteDatabase {
 
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
-		logger.Error("can't open"+path, sl.Err(err))
+		logger.Fatal("can't open "+path, sl.Err(err))
 	}
+
 	// TODO: ADD CLOSER
 	err = db.Ping()
 	if err != nil {
 		logger.Fatal("Не могу достучаться до базы данных", sl.Err(err))
 	}
+
 	migrations(db)
+
 	logger.Info("Connected to database", slog.String("path", path))
 	return &sqliteDatabase{database: db}
 }
+func removeDB(path string) error {
+	logger.Info("Remove database " + path)
+	if err := os.Remove(path); err != nil {
+		return err
+	}
 
+	return nil
+}
 func createDB(path string) {
 	logger.Info("Creating database " + path)
 	file, err := os.Create(path)
