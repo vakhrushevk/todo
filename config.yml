@@ -1,0 +1,5 @@
+pg:
+  dsn: host=localhost port=5678 dbname=todo user=postgres password=qwerty sslmode=disable
+http:
+  host: localhost
+  port: 8080
