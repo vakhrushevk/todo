@@ -1,21 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"github.com/go-chi/chi"
-	"net/http"
+	"log/slog"
 	"todo/internal/config"
+	"todo/pkg/logger"
 	"todo/pkg/metric"
+
+	"github.com/go-chi/chi"
 )
 
 func main() {
+	//logger.Init()
+	logger.Info("Логер инициализирован")
 
-	//logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	// TODO: logger
 	cfg := config.GetConfig()
 
 	router := chi.NewMux()
-
 	metricHandler := metric.Handler{}
 	metricHandler.Register(router)
 
@@ -25,7 +25,7 @@ func main() {
 	// TODO: handlers
 	// TODO: start
 
-	fmt.Printf("Start http server on %v", cfg.Http.Address())
+	logger.Info("start http server on ", slog.String("host", cfg.Http.Port), slog.String("port", cfg.Http.Port))
 
-	http.ListenAndServe(cfg.Http.Address(), router)
+	//	http.ListenAndServe(cfg.Http.Address(), router)
 }

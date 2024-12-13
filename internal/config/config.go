@@ -1,9 +1,12 @@
 package config
 
 import (
-	"github.com/ilyakaznacheev/cleanenv"
-	"log"
+	"log/slog"
 	"sync"
+	"todo/pkg/logger"
+	"todo/pkg/logger/sl"
+
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 // host=localhost port=5678 dbname=todo user=postgres password=qwerty sslmode=disable"
@@ -32,10 +35,8 @@ func GetConfig() *Config {
 		instance = &Config{}
 		if err := cleanenv.ReadConfig("config.yml", instance); err != nil {
 			help, _ := cleanenv.GetDescription(instance, nil)
-			log.Printf("INFO help config %v", help)
-			log.Fatalf("error with config, %v", err)
-			// TODO:LOGGER
-			// logger.fatal(err)
+			logger.Info("help config", slog.String("help", help))
+			logger.Fatal("Ошибка инициализации конфига", sl.Err(err))
 		}
 	})
 	return instance
