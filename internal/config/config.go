@@ -14,7 +14,10 @@ type Config struct {
 	Pg struct {
 		Dsn string `yaml:"dsn"`
 	}
-	Http Http
+	Http   Http
+	Sqlite struct {
+		Path string `yaml: "path"`
+	}
 }
 type Http struct {
 	Host string `yaml:"host"`

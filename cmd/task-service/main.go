@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 	"todo/internal/config"
+	"todo/pkg/db/sqlite"
 	"todo/pkg/logger"
 	"todo/pkg/metric"
 
@@ -16,10 +17,12 @@ func main() {
 	cfg := config.GetConfig()
 
 	router := chi.NewMux()
+
 	metricHandler := metric.Handler{}
 	metricHandler.Register(router)
 
-	// TODO: db
+	db := sqlite.Init(true)
+	defer db.Close()
 	// TODO: repository
 	// TODO: service
 	// TODO: handlers

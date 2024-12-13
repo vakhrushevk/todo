@@ -3,3 +3,5 @@ pg:
 http:
   host: localhost
   port: 8080
+sqlite:
+  path: "todo.db" # "host=localhost ...."
